@@ -1,0 +1,27 @@
+
+body {
+    background:green;
+    height: 100%;
+    margin:0px;
+}
+
+form {
+    position: absolute;
+    bottom:0;
+    left:0;
+    height:5%;
+    width:100%;
+}
+
+form input[type="text"] {
+    width: 78%;
+    height:100%;
+    font-size:2em;
+    box-sizing: border-box;
+}
+
+form input[type="submit"] {
+    width: 20%;
+    height:100%;
+    font-size:2em;
+}
