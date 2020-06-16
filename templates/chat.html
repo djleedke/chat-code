@@ -5,23 +5,23 @@
     <title>ChatBack</title>
     <meta name="description" content="">
     <link rel="stylesheet" href="{{ url_for("static", filename="main.css")}}">
+    <script type ="text/javascript">
+        var username = "{{ username }}";
+        var room = "{{ room }}";
+    </script>
 </head>
 <body>
-    <h1>Welcome to ChatBack!</h1>
-    <form action="/chat">
-        <div>
-            <label>Enter your username:</label>
-            <input type="text" name="username">
-        </div>
-        <div>
-            <label>Enter your room id: </label>
-            <input type="text" name="room">
-        </div>
-        <button type="submit">Submit</button>
+    <div id="users"></div>
+    <h1>Welcome to ChatBack!  You are in room: {{ room }} there are <span id="user-count">0</span> people here.</h1>
+    <div id="messages"></div>
+    <form id="message-form">
+        <input type="text" id="client-message" placeholder="Enter your message: ">
+        <button type="submit">Send</button>
     </form>
     <!-- External JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
     <!-- My JS -->
+    <script src="{{ url_for("static", filename="chat.js")}}"></script>
 </body>
 </html>
