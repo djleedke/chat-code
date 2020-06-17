@@ -44,7 +44,7 @@ def handle_join_room(data):
 
 @socketio.on('client_message')
 def handle_client_message(data):
-    print(data['message'])
+    print("Message received: " + data['message']),
     socketio.emit('client_message_receive', data, room=data['room'])
 
 

@@ -1,0 +1,26 @@
+
+html, body {
+    height:100%;
+    width:100%;
+    margin:0px;
+}
+
+h1 {
+    height:5%;
+    margin:0px;
+}
+
+#message-area {
+    width:100%;
+    height:90%;
+    background-color: blue;
+}
+
+.letter {
+    color:white;
+    font-size:3em;
+}
+
+#message-form {
+    height:5%;
+}
