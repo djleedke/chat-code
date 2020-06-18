@@ -1,6 +1,5 @@
 var socket = io.connect('http://' + document.domain + ':' + location.port);
-var attackMode = false;
-var letterQueue = [];
+var messageQueue = [];
 
 /*--------- Receiving from Server ---------*/
 
@@ -13,22 +12,88 @@ socket.on('connect', function() {
 });
 
 //Receiving the message from the server and updating the html
-socket.on('client_message_receive', function(data){
-    if(data['username'] !== username){ //We only want messages from other users
-        //Adding the letters in the message to our container
-        for(i = 0; i < data.message.length; i++){
-            var letter = createLetter(data.message[i]);
-            var pos = getRandomPosition(letter);
-
-            //Assigning random location
-            letter.style.left = pos[0] + 'px';
-            letter.style.top = pos[1] + 'px'; // Need to get height of header and add it here
-
-            $('#arena').append(letter);
-        }
+socket.on('server_message', function(data){
+        
+    if(data.username !== username){ //We only want messages from other users
+        messageQueue.push(data.message);
+        console.log(messageQueue);
     }
+
 });
 
+/*----------  Message Queue ----------*/
+
+setInterval(function(){
+    
+    var msg = messageQueue[0];
+
+    if(messageQueue.length > 0){
+
+        for(i = 0; i < msg.length; i++){
+
+            let character = msg[i];
+
+            setTimeout(function() {
+
+                const char = new Character(character); 
+                var j = i; 
+    
+            }, i * 2000);
+        }
+
+        messageQueue.shift();
+        console.log(messageQueue);
+    }
+}, 1000);
+
+
+/*---------- Classes ----------*/
+
+class Character {
+
+    constructor(character){
+        this.character = character;
+        this.ele = document.createElement('div');
+        this.ele.innerHTML = character;
+        this.ele.setAttribute('style', 'position:absolute');
+        this.ele.setAttribute('class', 'letter');
+        $('#letter-area').append(this.ele);
+        this.moveCharacter();
+    }
+
+    moveCharacter(){
+
+        this.getRandomX();
+
+        var speed = 1;
+        var currentPos = 0;
+        var elem = this.ele;
+
+        var motionInterval = setInterval(function(){
+            currentPos += speed;
+            elem.style.top = currentPos + "px";
+            
+            var maxHeight = $('#letter-area').height() - elem.clientHeight / 2;
+
+            if(currentPos > maxHeight){
+                elem.remove();
+                clearInterval(motionInterval);
+            }
+
+        }, 20);
+    }
+
+    getRandomX(){
+
+        var areaWidth = $('#letter-area').width(),
+            charWidth = this.ele.clientWidth,
+            widthMax = areaWidth - charWidth;
+    
+        var randomX = Math.floor(Math.random() * widthMax);
+    
+        this.ele.style.left = randomX + 'px';
+    }
+} 
 
 /* --------- Sending to Server ---------*/
 
@@ -45,19 +110,6 @@ $('#message-form').submit(function(e){
     $('#client-message').val('');
 });
 
-//When team is changed we need to send a message to the server
-$('#team-select').change(function(e){
-
-    var team = $('#team-select').val();
-    changeTeamColors(team);
-    socket.emit('team_change', {
-        username: username,
-        room: room,
-        team: team
-    });
-
-    console.log('switching teams to ' + team)
-});
 
 /*--------- Key Handler --------- */
 
@@ -65,6 +117,7 @@ $('#team-select').change(function(e){
 document.onkeydown = function(e){
     e = e || window.event;
 
+    /*
     //Attack mode toggling
     if(e.ctrlKey && attackMode === false){
         setAttackMode(true);
@@ -75,38 +128,10 @@ document.onkeydown = function(e){
     //We are defending, letters will now be removed when typed
     if(attackMode === false){
         checkForLetterRemoval(e);
-    }
+    }*/
 }
 
 /*--------- Helper Functions --------*/
-
-//Sets our attack mode to the desired value (true or false)
-function setAttackMode(bool){
-    if(bool === false){ //Attack mode off
-        attackMode = false;
-        document.getElementById('attack').checked = false;
-        document.getElementById('client-message').readOnly = true;
-    } else if (bool === true){ //Attack mode on
-        attackMode = true;
-        document.getElementById('attack').checked = true;
-        document.getElementById('client-message').readOnly = false;
-    }
-}
-
-function changeTeamColors(team){
-
-    if(team === 'red'){
-        console.log('here');
-        $('#arena').removeClass('red-team blue-team default');
-        $('#arena').addClass('red-team');
-    } else if(team === 'blue'){
-        $('#arena').removeClass('red-team blue-team default');
-        $('#arena').addClass('blue-team');
-    } else if(team === 'spectator'){
-        $('#arena').removeClass('red-team blue-team default');
-        $('#arena').addClass('default');
-    }
-}
 
 //Checks if the specified letter was pressed if it exists removes it from the DOM
 function checkForLetterRemoval(e){
@@ -124,31 +149,15 @@ function checkForLetterRemoval(e){
     }
 }
 
-//Creates our letter div that will be added to the message area
-function createLetter(letterString){
-    var letter = document.createElement('div');
-    letter.innerHTML = letterString;
-    letter.setAttribute('style', 'position:absolute');
-    letter.setAttribute('class', 'letter');
-
-    letterQueue.push(letter);
-
-    return letter;
-}
-
 //Determing random location inside message area to place our letters
-function getRandomPosition(ele){
+function getRandomX(ele){
 
-    var areaWidth = $('#arena').width(),
-        areaHeight = $('#arena').height(),
+    var areaWidth = $('#letter-area').width(),
         letterWidth = ele.clientWidth,
-        letterHeight = ele.clientHeight,
-        widthMax = areaWidth - letterWidth,
-        heightMax = areaHeight - letterHeight;
+        widthMax = areaWidth - letterWidth;
 
-    var randomX = Math.floor(Math.random() * widthMax),
-        randomY = Math.floor(Math.random() * heightMax);
+    var randomX = Math.floor(Math.random() * widthMax);
 
-    return [randomX ,randomY]
+    return randomX;
 }
 

@@ -12,17 +12,11 @@
 </head>
 <body>
     <div id="users"></div>
-    <div id="arena" class="default">
+    <div id="letter-area" class="default">
         <div id="room-stats">
+            <div>Name: {{ username }}</div>
             <div>Room: {{ room }}</div>
-            <div>Players: <span id="user-count">n/a</span></div>
-            <div>Team:
-                <select id="team-select">
-                    <option value="spectator" selected>Spectator</option>
-                    <option value="red">Red</option>
-                    <option value="blue">Blue</option>
-                </select>
-            </div>
+            <div>Users: <span id="user-count">n/a</span></div>
         </div>
     </div>
     <form id="message-form">
