@@ -2,6 +2,8 @@ var socket = io.connect('http://' + document.domain + ':' + location.port);
 var attackMode = false;
 var letterQueue = [];
 
+/*--------- Receiving from Server ---------*/
+
 //On connection we send username & room args from index
 socket.on('connect', function() {
     socket.emit('join_room', {
@@ -20,12 +22,15 @@ socket.on('client_message_receive', function(data){
 
             //Assigning random location
             letter.style.left = pos[0] + 'px';
-            letter.style.top = pos[1] + 45 + 'px'; // Need to get height of header and add it here
+            letter.style.top = pos[1] + 'px'; // Need to get height of header and add it here
 
-            $('#message-area').append(letter);
+            $('#arena').append(letter);
         }
     }
 });
+
+
+/* --------- Sending to Server ---------*/
 
 //When our message form is submitted we send the message to the server
 $('#message-form').submit(function(e){
@@ -39,6 +44,22 @@ $('#message-form').submit(function(e){
 
     $('#client-message').val('');
 });
+
+//When team is changed we need to send a message to the server
+$('#team-select').change(function(e){
+
+    var team = $('#team-select').val();
+    changeTeamColors(team);
+    socket.emit('team_change', {
+        username: username,
+        room: room,
+        team: team
+    });
+
+    console.log('switching teams to ' + team)
+});
+
+/*--------- Key Handler --------- */
 
 //Keypress logic
 document.onkeydown = function(e){
@@ -57,16 +78,33 @@ document.onkeydown = function(e){
     }
 }
 
+/*--------- Helper Functions --------*/
+
 //Sets our attack mode to the desired value (true or false)
 function setAttackMode(bool){
     if(bool === false){ //Attack mode off
         attackMode = false;
-        document.getElementById("attack").checked = false;
-        document.getElementById("client-message").readOnly = true;
+        document.getElementById('attack').checked = false;
+        document.getElementById('client-message').readOnly = true;
     } else if (bool === true){ //Attack mode on
         attackMode = true;
-        document.getElementById("attack").checked = true;
-        document.getElementById("client-message").readOnly = false;
+        document.getElementById('attack').checked = true;
+        document.getElementById('client-message').readOnly = false;
+    }
+}
+
+function changeTeamColors(team){
+
+    if(team === 'red'){
+        console.log('here');
+        $('#arena').removeClass('red-team blue-team default');
+        $('#arena').addClass('red-team');
+    } else if(team === 'blue'){
+        $('#arena').removeClass('red-team blue-team default');
+        $('#arena').addClass('blue-team');
+    } else if(team === 'spectator'){
+        $('#arena').removeClass('red-team blue-team default');
+        $('#arena').addClass('default');
     }
 }
 
@@ -101,8 +139,8 @@ function createLetter(letterString){
 //Determing random location inside message area to place our letters
 function getRandomPosition(ele){
 
-    var areaWidth = $('#message-area').width(),
-        areaHeight = $('#message-area').height(),
+    var areaWidth = $('#arena').width(),
+        areaHeight = $('#arena').height(),
         letterWidth = ele.clientWidth,
         letterHeight = ele.clientHeight,
         widthMax = areaWidth - letterWidth,

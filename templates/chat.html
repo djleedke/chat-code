@@ -12,8 +12,19 @@
 </head>
 <body>
     <div id="users"></div>
-    <h1>Welcome to ChatBack!  You are in room: {{ room }} there are <span id="user-count">0</span> people here.<input type="checkbox" name="attack" id="attack"><label for="attack">Attack Mode?</label></h1>
-    <div id="message-area"></div>
+    <div id="arena" class="default">
+        <div id="room-stats">
+            <div>Room: {{ room }}</div>
+            <div>Players: <span id="user-count">n/a</span></div>
+            <div>Team:
+                <select id="team-select">
+                    <option value="spectator" selected>Spectator</option>
+                    <option value="red">Red</option>
+                    <option value="blue">Blue</option>
+                </select>
+            </div>
+        </div>
+    </div>
     <form id="message-form">
         <input type="text" id="client-message" placeholder="Enter your message: ">
         <button type="submit">Send</button>

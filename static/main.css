@@ -5,22 +5,44 @@ html, body {
     margin:0px;
 }
 
-h1 {
-    height:5%;
-    margin:0px;
+#arena {
+    width:100%;
+    height:95%;
+    
+    color:white;
 }
 
-#message-area {
-    width:100%;
-    height:90%;
+.default {
+    background-color:grey;
+}
+
+.red-team {
+    background-color: red;
+}
+
+.blue-team {
     background-color: blue;
 }
 
+
+#room-stats {
+    padding-left:10px;
+    padding-top:10px;
+    float:left;
+}
+
 .letter {
-    color:white;
+    
     font-size:3em;
 }
 
 #message-form {
+    height:5%;
+}
+
+#team-selection {
+    position: fixed;
+    bottom:0;
+    width:100%;
     height:5%;
 }
