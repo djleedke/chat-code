@@ -1,6 +1,7 @@
 var socket = io.connect('http://' + document.domain + ':' + location.port);
 var messageQueue = [];
 
+
 /*--------- Receiving from Server ---------*/
 
 //On connection we send username & room args from index
@@ -22,29 +23,47 @@ socket.on('server_message', function(data){
 });
 
 /*----------  Message Queue ----------*/
+// Every second an interval runs to check and see if any messages are waiting
+// in the message queue.  If there are we use a timeout in the delayedCreateCharacters
+// function to delay their appearance on the screen (every 2 seconds a character appears).  
+// During this time our nextMessage bool is false to prevent the screen from being flooded 
+// with letters and the messages getting mixed together.  Once the final letter of a message 
+// is sent the if statement in the interval will allow another message to fire off.
+
+var nextMessage = true;
 
 setInterval(function(){
     
     var msg = messageQueue[0];
 
-    if(messageQueue.length > 0){
+    if(messageQueue.length > 0 && nextMessage){ //If we have a message in the queue
 
+        var counter;
         for(i = 0; i < msg.length; i++){
 
             let character = msg[i];
 
-            setTimeout(function() {
-
-                const char = new Character(character); 
-                var j = i; 
-    
-            }, i * 2000);
+            delayedCreateCharacters(i, character, msg.length);
         }
 
+        nextMessage = false;
         messageQueue.shift();
         console.log(messageQueue);
     }
 }, 1000);
+
+function delayedCreateCharacters(i, character, msgLength){
+    setTimeout(function() {
+
+        const char = new Character(character); 
+
+        if(i === msgLength - 1){
+            nextMessage = true;
+            console.log("ready for next");
+        }
+
+    }, i * 2000);
+}
 
 
 /*---------- Classes ----------*/
@@ -65,7 +84,7 @@ class Character {
 
         this.getRandomX();
 
-        var speed = 1;
+        var speed = 1.5;
         var currentPos = 0;
         var elem = this.ele;
 

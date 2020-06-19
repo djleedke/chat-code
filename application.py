@@ -44,8 +44,6 @@ def handle_client_message(data):
     
     #room = get_room(data['room'])
     #room.add_message_to_queue(data['message'], data['username'])
-
-    time.sleep(2)
     socketio.emit('server_message', data, room=data['room'])
         
     
