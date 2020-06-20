@@ -17,9 +17,9 @@ socket.on('server_message', function(data){
         
     //var message = { messageID: data.messageID,  message: data.message }
     console.log(data);
-    if(data.username !== username){ //We only want messages from other users
+    //if(data.username !== username){ //We only want messages from other users
         messageQueue.push(data);
-    }
+    //}
 
 });
 
@@ -47,7 +47,7 @@ setInterval(function(){
             createFallingCharacters(i, character, message);
         }
 
-        $('#message-area').append('<div>' + message['message'] + '</div>');
+        createMessageBubble(message);
 
         nextMessage = false;
         messageQueue.shift();
@@ -66,6 +66,20 @@ function createFallingCharacters(pos, character, message){
         }
 
     }, i * 2000);
+}
+
+function createMessageBubble(message){
+
+    $('#message-area').append('<div class="message" id="' + message['messageID'] + '"> ' +
+                                '<div class="message-username">' + message['username'] + ':</div></div>');
+
+    for(i = 0; i < message['message'].length; i++){
+
+        $('#' + message['messageID']).append('<span>' + message['message'][i] + '</span>');
+
+    }
+    
+
 }
 
 

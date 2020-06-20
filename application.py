@@ -45,7 +45,7 @@ def handle_join_room(data):
 def handle_client_message(data):
 
     print("Message received: " + data['message']),
-    data['messageID'] = uuid.uuid4().hex[:10] #10 digit message idea so messages are unique
+    data['messageID'] = uuid.uuid4().hex[:10]                   #10 digit message id so messages are unique
     socketio.emit('server_message', data, room=data['room'])    #Sending it back to the other connected clients
 
 
