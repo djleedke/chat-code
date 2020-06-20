@@ -15,9 +15,10 @@ socket.on('connect', function() {
 //Receiving the message from the server and updating the html
 socket.on('server_message', function(data){
         
+    //var message = { messageID: data.messageID,  message: data.message }
+    console.log(data);
     if(data.username !== username){ //We only want messages from other users
-        messageQueue.push(data.message);
-        console.log(messageQueue);
+        messageQueue.push(data);
     }
 
 });
@@ -34,32 +35,32 @@ var nextMessage = true;
 
 setInterval(function(){
     
-    var msg = messageQueue[0];
-
     if(messageQueue.length > 0 && nextMessage){ //If we have a message in the queue
 
-        var counter;
-        for(i = 0; i < msg.length; i++){
+        var message = messageQueue[0];
+        //var msg = messageQueue[0]['message'];
 
-            let character = msg[i];
+        for(i = 0; i < message['message'].length; i++){
 
-            createFallingCharacters(i, character, msg.length);
+            let character = message['message'][i];
+
+            createFallingCharacters(i, character, message);
         }
 
-        $('#message-area').append('<div>' + msg + '</div>');
+        $('#message-area').append('<div>' + message['message'] + '</div>');
 
         nextMessage = false;
         messageQueue.shift();
-        console.log(messageQueue);
     }
 }, 1000);
 
-function createFallingCharacters(pos, character, msgLength){
+function createFallingCharacters(pos, character, message){
     setTimeout(function() {
 
-        const char = new Character(character); 
+        console.log(message['messageID']);
+        const char = new Character(character, message) 
 
-        if(pos === msgLength - 1){
+        if(pos === message['message'].length - 1){
             nextMessage = true;
             console.log("ready for next");
         }
@@ -72,13 +73,14 @@ function createFallingCharacters(pos, character, msgLength){
 
 class Character {
 
-    constructor(character){
+    constructor(character, message){
         //Creating the element and setting style
         this.character = character;
         this.ele = document.createElement('div');
         this.ele.innerHTML = character;
+        this.ele.setAttribute('data-message-id', message['messageID']);
         this.ele.setAttribute('style', 'position:absolute');
-        this.ele.setAttribute('class', 'letter');
+        this.ele.setAttribute('class', 'character');
         //Adding to DOM
         $('#letter-area').append(this.ele);
         //Start it falling
