@@ -24,7 +24,7 @@ socket.on('server_message', function(data){
 
 /*----------  Message Queue ----------*/
 // Every second an interval runs to check and see if any messages are waiting
-// in the message queue.  If there are we use a timeout in the delayedCreateCharacters
+// in the message queue.  If there are we use a timeout in the createFallingCharacters
 // function to delay their appearance on the screen (every 2 seconds a character appears).  
 // During this time our nextMessage bool is false to prevent the screen from being flooded 
 // with letters and the messages getting mixed together.  Once the final letter of a message 
@@ -43,8 +43,10 @@ setInterval(function(){
 
             let character = msg[i];
 
-            delayedCreateCharacters(i, character, msg.length);
+            createFallingCharacters(i, character, msg.length);
         }
+
+        $('#message-area').append('<div>' + msg + '</div>');
 
         nextMessage = false;
         messageQueue.shift();
@@ -52,12 +54,12 @@ setInterval(function(){
     }
 }, 1000);
 
-function delayedCreateCharacters(i, character, msgLength){
+function createFallingCharacters(pos, character, msgLength){
     setTimeout(function() {
 
         const char = new Character(character); 
 
-        if(i === msgLength - 1){
+        if(pos === msgLength - 1){
             nextMessage = true;
             console.log("ready for next");
         }
@@ -71,12 +73,15 @@ function delayedCreateCharacters(i, character, msgLength){
 class Character {
 
     constructor(character){
+        //Creating the element and setting style
         this.character = character;
         this.ele = document.createElement('div');
         this.ele.innerHTML = character;
         this.ele.setAttribute('style', 'position:absolute');
         this.ele.setAttribute('class', 'letter');
+        //Adding to DOM
         $('#letter-area').append(this.ele);
+        //Start it falling
         this.moveCharacter();
     }
 
@@ -84,7 +89,7 @@ class Character {
 
         this.getRandomX();
 
-        var speed = 1.5;
+        var speed = 2;
         var currentPos = 0;
         var elem = this.ele;
 
@@ -150,8 +155,7 @@ document.onkeydown = function(e){
     }*/
 }
 
-/*--------- Helper Functions --------*/
-
+/*--------- Helper Functions --------
 //Checks if the specified letter was pressed if it exists removes it from the DOM
 function checkForLetterRemoval(e){
     for(i = 0; i < letterQueue.length; i++){
@@ -166,17 +170,4 @@ function checkForLetterRemoval(e){
             break;
         }
     }
-}
-
-//Determing random location inside message area to place our letters
-function getRandomX(ele){
-
-    var areaWidth = $('#letter-area').width(),
-        letterWidth = ele.clientWidth,
-        widthMax = areaWidth - letterWidth;
-
-    var randomX = Math.floor(Math.random() * widthMax);
-
-    return randomX;
-}
-
+}*/

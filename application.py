@@ -28,6 +28,7 @@ def chat():
     else:
         return redirect(url_for('index'))
 
+#On a successful connection 'join_room' is sent from client
 @socketio.on('join_room')
 def handle_join_room(data):
 
@@ -38,20 +39,18 @@ def handle_join_room(data):
     
     socketio.emit('update_users', data, room=data['room'])
 
+#Receiving the message from the client
 @socketio.on('client_message')
 def handle_client_message(data):
-    print("Message received: " + data['message']),
-    
-    #room = get_room(data['room'])
-    #room.add_message_to_queue(data['message'], data['username'])
-    socketio.emit('server_message', data, room=data['room'])
-        
-    
 
+    print("Message received: " + data['message']),
+    socketio.emit('server_message', data, room=data['room'])    #Sending it back to the other connected clients
+
+
+#Checking to see if we have a room going already 
+#if not we make a new one and add the user    
 def join_room_manager(room_name, username):
     
-    #Checking to see if we have a room going already 
-    #if not we make a new one and add the user
     exists = False
 
     for room in room_list:
@@ -64,7 +63,6 @@ def join_room_manager(room_name, username):
         new_room = RoomManager(room_name)
         room_list.append(new_room)
         new_room.add_user(username)
-        #new_room.start_queue(socketio)
 
 def get_room(room_name):
 
