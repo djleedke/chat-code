@@ -6,13 +6,19 @@ html, body {
     overflow-y:hidden;
 }
 
-#letter-area {
+#character-area {
     float:left;
     width:80%;
     height:95%;
     background-color:rgb(92, 100, 211);
     color:white;
     
+}
+
+#room-stats {
+    padding-left:10px;
+    padding-top:10px;
+    float:left;
 }
 
 #message-area {
@@ -40,10 +46,12 @@ html, body {
     padding-bottom: 5px;
 }
 
-#room-stats {
-    padding-left:10px;
-    padding-top:10px;
-    float:left;
+.hidden {
+    color:transparent;
+}
+
+.visible {
+    color:black;
 }
 
 .character {

@@ -65,7 +65,7 @@ function createFallingCharacters(pos, character, message){
             console.log("ready for next");
         }
 
-    }, i * 2000);
+    }, i * 500);
 }
 
 function createMessageBubble(message){
@@ -75,7 +75,7 @@ function createMessageBubble(message){
 
     for(i = 0; i < message['message'].length; i++){
 
-        $('#' + message['messageID']).append('<span>' + message['message'][i] + '</span>');
+        $('#' + message['messageID']).append('<span class="hidden" data-visible="false" data-character=' + message['message'][i] +'>' + message['message'][i] +'</span>');
 
     }
     
@@ -93,10 +93,11 @@ class Character {
         this.ele = document.createElement('div');
         this.ele.innerHTML = character;
         this.ele.setAttribute('data-message-id', message['messageID']);
+        this.ele.setAttribute('data-character', character);
         this.ele.setAttribute('style', 'position:absolute');
         this.ele.setAttribute('class', 'character');
         //Adding to DOM
-        $('#letter-area').append(this.ele);
+        $('#character-area').append(this.ele);
         //Start it falling
         this.moveCharacter();
     }
@@ -113,7 +114,7 @@ class Character {
             currentPos += speed;
             elem.style.top = currentPos + "px";
             
-            var maxHeight = $('#letter-area').height() - elem.clientHeight / 2;
+            var maxHeight = $('#character-area').height() - elem.clientHeight / 2;
 
             if(currentPos > maxHeight){
                 elem.remove();
@@ -125,7 +126,7 @@ class Character {
 
     getRandomX(){
 
-        var areaWidth = $('#letter-area').width(),
+        var areaWidth = $('#character-area').width(),
             charWidth = this.ele.clientWidth,
             widthMax = areaWidth - charWidth;
     
@@ -154,36 +155,42 @@ $('#message-form').submit(function(e){
 /*--------- Key Handler --------- */
 
 //Keypress logic
-document.onkeydown = function(e){
-    e = e || window.event;
+document.onkeydown = function(event){
+    event = event || window.event;
 
-    /*
-    //Attack mode toggling
-    if(e.ctrlKey && attackMode === false){
-        setAttackMode(true);
-    } else if(e.ctrlKey && attackMode === true){
-        setAttackMode(false); 
-    }
+    var characterFound = false;
+    var keyPress = String.fromCharCode(event.keyCode);
+    
+    if(!$('#client-message').is(':focus')){ //If we aren't focused in the form
+        
+        //TO DO: This all needs to be cleaned up and moved to a separate function
+        var characterArea = document.getElementById('character-area');
+        var currentCharacters = characterArea.querySelectorAll('[data-character]')
+        
+        outerloop:
+        for(i = 0; i < currentCharacters.length; i++){
+                
+            if(currentCharacters[i].getAttribute('data-character').toUpperCase() === keyPress) {
 
-    //We are defending, letters will now be removed when typed
-    if(attackMode === false){
-        checkForLetterRemoval(e);
-    }*/
-}
+                //Here we are first getting the message element that the id matches, and then 
+                //all of the span elements inside that message so we can figure out if the character was inside
+                var char = currentCharacters[i];
+                var messageEle = document.getElementById(char.getAttribute('data-message-id')).querySelectorAll('[data-character]');
 
-/*--------- Helper Functions --------
-//Checks if the specified letter was pressed if it exists removes it from the DOM
-function checkForLetterRemoval(e){
-    for(i = 0; i < letterQueue.length; i++){
-
-        inputChar = String.fromCharCode(e.keyCode).toUpperCase();
-        letterChar = letterQueue[i].innerHTML.toUpperCase();
-
-        if(inputChar === letterChar){
-            letterQueue[i].remove();
-            letterQueue = letterQueue.filter(function(ele) { return ele !== letterQueue[i] });
-            console.log(letterQueue);
-            break;
+                //Inside our span elements is there a span that matches the character typed
+                for(j = 0; j < messageEle.length; j++){
+                    console.log(messageEle[j].getAttribute('data-visible'));
+                    if(messageEle[j].getAttribute('data-character').toUpperCase() === keyPress && messageEle[j].getAttribute('data-visible') === 'false'){
+                        //We've found a match
+                        messageEle[j].setAttribute('data-visible', true);
+                        messageEle[j].classList.remove('hidden');
+                        messageEle[j].classList.add('visible');
+                        currentCharacters[i].remove();
+                        break outerloop;
+                    }
+                }
+            }
         }
     }
-}*/
+}
+
