@@ -167,7 +167,8 @@ document.onkeydown = function(e){
         
         if(e.keyCode === 13) {                             //If enter is pressed we give the message form focus again
                 e.preventDefault();
-                $('#client-message').focus();
+                //$('#client-message').focus();
+                toggleMessageForm();
         } else {                                              
                 checkForCharacterRemoval(keyPressString);  //Otherwise checking whether the character should be removed
             }
@@ -211,4 +212,22 @@ function messageCharacterFound(ele){
     ele.classList.remove('hidden');
     ele.classList.add('visible');
 
+}
+
+/* --------- On Click Events ----------*/
+
+$('#submit').click(function(){
+    toggleMessageForm();
+});
+
+function toggleMessageForm(){
+    
+    if($('#client-message').hasClass('extended')){
+        $('#client-message').removeClass('extended');
+        $('#client-message').addClass('retracted');
+    } else {
+        $('#client-message').removeClass('retracted');
+        $('#client-message').addClass('extended');
+        $('#client-message').focus();
+    }
 }

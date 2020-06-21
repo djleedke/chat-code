@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>ChatCodes</title>
+    <title>ChatCode</title>
     <meta name="description" content="">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
 </head>
 <body>
     <header>
-        <div id="logo">ChatCodes</div>
+        <div id="logo">ChatCode</div>
     </header>
     <div id="character-area" class="default">
         <div id="room-stats">
@@ -23,8 +23,7 @@
             <div>Users: <span id="user-count">n/a</span></div>
         </div>
         <form id="message-form">
-            <input type="text" id="client-message" placeholder="Encode a message (100 characters or less)" tabindex="0" autocomplete="off">
-            <button type="submit"><span class="material-icons">send</span></button>
+            <input type="text" id="client-message" class="extended" placeholder="Encode a message (100 characters or less)" tabindex="0" autocomplete="off"><button id="submit" type="submit"><span class="material-icons">send</span></button>
         </form>
     </div>
     <div id="message-area">

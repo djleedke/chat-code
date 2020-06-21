@@ -54,30 +54,42 @@ header {
 #message-form {
     position: absolute;
     bottom: 20px;
-    width:50%;
-
+    width:100%;
 }
 
-#message-form input {
-    width:93%;
+
+#client-message {
+    display: inline-block;
     height:40px;
     font-size:1.25em;
     outline:none;
     border:0;
+    box-sizing: border-box;
+}
+
+.extended {
+    width:50%;
+    transition: all ease 1s;
     padding-left:20px;
+}
+
+.retracted {
+    width:0%;   
+    transition: all ease 1s;
+    padding-left:0px;
+    padding-right:0px;
 }
 
 
 #message-form button {
-    vertical-align: middle;
-    position: absolute;
-    top:0;
-    bottom:0;
+    display: inline-block;
+    vertical-align: top;
+    height:40px;
     width:50px;
     border:0;
     background-color: #29353d;
     color:white;
-    transition: ease .5s;
+    transition: background-color ease .5s;
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
     outline:none;
