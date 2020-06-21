@@ -71,7 +71,7 @@ function createFallingCharacters(pos, character, message){
 function createMessageBubble(message){
 
     $('#messages').append('<div class="message" id="' + message['messageID'] + '"> ' +
-                                '<div class="message-username">' + message['username'] + ':</div></div>');
+                                '<div class="message-username">[' + message['username'] + ']:</div></div>');
 
     for(i = 0; i < message['message'].length; i++){
 
@@ -106,7 +106,7 @@ class Character {
 
         this.getRandomX();
 
-        var speed = 2;
+        var speed = 1.5;
         var currentPos = 0;
         var elem = this.ele;
 

@@ -47,6 +47,50 @@ header {
     overflow-y:auto;
 }
 
+.character {
+    font-size:3em;
+}
+
+#message-form {
+    position: absolute;
+    bottom: 20px;
+    width:50%;
+
+}
+
+#message-form input {
+    width:93%;
+    height:40px;
+    font-size:1.25em;
+    outline:none;
+    border:0;
+    padding-left:20px;
+}
+
+
+#message-form button {
+    vertical-align: middle;
+    position: absolute;
+    top:0;
+    bottom:0;
+    width:50px;
+    border:0;
+    background-color: #29353d;
+    color:white;
+    transition: ease .5s;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    outline:none;
+    cursor:pointer;
+}
+
+#message-form button:hover {
+
+    background-color: white;
+    color:#29353d;
+    transition: ease .5s;
+}
+
 #messages {
     margin-bottom:70px;
     margin-right:20px;
@@ -56,7 +100,7 @@ header {
     padding:10px 20px;
     background-color: #29353d;
     color: lightgreen;
-    margin:2% 5%;
+    margin:2% 5% 0 2%;
     border-radius: 5px;
     font-size:1.25em;
 }
@@ -74,12 +118,5 @@ header {
     color: white;
 }
 
-.character {
-    font-size:3em;
-}
 
-#message-form {
-    position: absolute;
-    bottom: 20px;
-    left:20px;
-}
+
