@@ -70,7 +70,7 @@ function createFallingCharacters(pos, character, message){
 
 function createMessageBubble(message){
 
-    $('#message-area').append('<div class="message" id="' + message['messageID'] + '"> ' +
+    $('#messages').append('<div class="message" id="' + message['messageID'] + '"> ' +
                                 '<div class="message-username">' + message['username'] + ':</div></div>');
 
     for(i = 0; i < message['message'].length; i++){
@@ -112,7 +112,7 @@ class Character {
 
         var motionInterval = setInterval(function(){
             currentPos += speed;
-            elem.style.top = currentPos + "px";
+            elem.style.top = currentPos + 50 + "px";
             
             var maxHeight = $('#character-area').height() - elem.clientHeight / 2;
 
@@ -142,13 +142,21 @@ class Character {
 $('#message-form').submit(function(e){
     e.preventDefault();
 
-    socket.emit('client_message', {
-        username: username,
-        room: room,
-        message: $('#client-message').val()
-    });
+    if($('#client-message').val().replace(/\s/g, '').length){
+        //Message isn't only whitespace
+        socket.emit('client_message', {
+            username: username,
+            room: room,
+            message: $('#client-message').val()
+        });
 
-    $('#client-message').val('');
+        $('#client-message').val('');
+        $('#client-message').blur();
+    } else {
+        //Submitted only whitespace
+        $('#client-message').val('');
+        $('#client-message').blur();
+    }
 });
 
 
@@ -163,30 +171,37 @@ document.onkeydown = function(event){
     
     if(!$('#client-message').is(':focus')){ //If we aren't focused in the form
         
-        //TO DO: This all needs to be cleaned up and moved to a separate function
-        var characterArea = document.getElementById('character-area');
-        var currentCharacters = characterArea.querySelectorAll('[data-character]')
-        
-        outerloop:
-        for(i = 0; i < currentCharacters.length; i++){
-                
-            if(currentCharacters[i].getAttribute('data-character').toUpperCase() === keyPress) {
 
-                //Here we are first getting the message element that the id matches, and then 
-                //all of the span elements inside that message so we can figure out if the character was inside
-                var char = currentCharacters[i];
-                var messageEle = document.getElementById(char.getAttribute('data-message-id')).querySelectorAll('[data-character]');
+        if(event.keyCode === 13) { //If enter is pressed we give the message form focus again
+            event.preventDefault();
+            $('#client-message').focus();
+        } else {
 
-                //Inside our span elements is there a span that matches the character typed
-                for(j = 0; j < messageEle.length; j++){
-                    console.log(messageEle[j].getAttribute('data-visible'));
-                    if(messageEle[j].getAttribute('data-character').toUpperCase() === keyPress && messageEle[j].getAttribute('data-visible') === 'false'){
-                        //We've found a match
-                        messageEle[j].setAttribute('data-visible', true);
-                        messageEle[j].classList.remove('hidden');
-                        messageEle[j].classList.add('visible');
-                        currentCharacters[i].remove();
-                        break outerloop;
+            //TO DO: This all needs to be cleaned up and moved to a separate function
+            var characterArea = document.getElementById('character-area');
+            var currentCharacters = characterArea.querySelectorAll('[data-character]')
+            
+            outerloop:
+            for(i = 0; i < currentCharacters.length; i++){
+                    
+                if(currentCharacters[i].getAttribute('data-character').toUpperCase() === keyPress) {
+
+                    //Here we are first getting the message element that the id matches, and then 
+                    //all of the span elements inside that message so we can figure out if the character was inside
+                    var char = currentCharacters[i];
+                    var messageEle = document.getElementById(char.getAttribute('data-message-id')).querySelectorAll('[data-character]');
+
+                    //Inside our span elements is there a span that matches the character typed
+                    for(j = 0; j < messageEle.length; j++){
+                        console.log(messageEle[j].getAttribute('data-visible'));
+                        if(messageEle[j].getAttribute('data-character').toUpperCase() === keyPress && messageEle[j].getAttribute('data-visible') === 'false'){
+                            //We've found a match
+                            messageEle[j].setAttribute('data-visible', true);
+                            messageEle[j].classList.remove('hidden');
+                            messageEle[j].classList.add('visible');
+                            currentCharacters[i].remove();
+                            break outerloop;
+                        }
                     }
                 }
             }

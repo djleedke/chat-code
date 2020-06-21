@@ -4,45 +4,65 @@ html, body {
     width:100%;
     margin:0px;
     overflow-y:hidden;
+    font-family: 'Source Code Pro', monospace;
+}
+
+header {
+    background-color:#1f282e;
+    height:50px;
+    color:white;
+}
+
+#logo {
+    margin-left:20px;
+    font-size: 1.5em;
+    font-weight: bold;
+    padding-top:10px;
+    padding-bottom:10px;
 }
 
 #character-area {
     float:left;
-    width:80%;
-    height:95%;
-    background-color:rgb(92, 100, 211);
+    width:75%;
+    height:100%;
+    background-color:#36454f;
     color:white;
     
 }
 
 #room-stats {
-    padding-left:10px;
-    padding-top:10px;
+    padding-left:20px;
+    padding-top:20px;
     float:left;
 }
 
 #message-area {
     display: inline-block;
-    background-color:rgb(92, 100, 211);
-    height:95%;
-    width:20%;
+    background-color:#36454f;
+    height:100%;
+    width:25%;
     color:white;
     display:flex;
     flex-direction: column-reverse;
     overflow-y:auto;
 }
 
+#messages {
+    margin-bottom:70px;
+    margin-right:20px;
+}
+
 .message {
     padding:10px 20px;
-    background-color: white;
-    color:black;
+    background-color: #29353d;
+    color: lightgreen;
     margin:2% 5%;
     border-radius: 5px;
     font-size:1.25em;
 }
 
 .message-username {
-    font-weight: bold;
+    
     padding-bottom: 5px;
 }
 
@@ -51,7 +71,7 @@ html, body {
 }
 
 .visible {
-    color:black;
+    color: white;
 }
 
 .character {
@@ -59,5 +79,7 @@ html, body {
 }
 
 #message-form {
-    height:5%;
+    position: absolute;
+    bottom: 20px;
+    left:20px;
 }
