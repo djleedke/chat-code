@@ -23,38 +23,56 @@ socket.on('server_message', function(data){
 
 });
 
+/* --------- Sending to Server ---------*/
+
+//When our message form is submitted we send the message to the server
+$('#message-form').submit(function(e){
+    e.preventDefault();
+
+    if($('#client-message').val().replace(/\s/g, '').length){
+        //Message isn't only whitespace TO DO: Planning on moving input validation to the server
+        socket.emit('client_message', {
+            username: username,
+            room: room,
+            message: $('#client-message').val()
+        });
+
+        $('#client-message').val('');
+        $('#client-message').blur();
+    } else {
+        //Submitted only whitespace
+        $('#client-message').val('');
+        $('#client-message').blur();
+    }
+});
+
 /*----------  Message Queue ----------*/
-// Every second an interval runs to check and see if any messages are waiting
-// in the message queue.  If there are we use a timeout in the createFallingCharacters
-// function to delay their appearance on the screen (every 2 seconds a character appears).  
-// During this time our nextMessage bool is false to prevent the screen from being flooded 
-// with letters and the messages getting mixed together.  Once the final letter of a message 
-// is sent the if statement in the interval will allow another message to fire off.
 
 var nextMessage = true;
 
+//The queue is checked every 1 second, waits for prior message to complete sending before starting another
 setInterval(function(){
     
-    if(messageQueue.length > 0 && nextMessage){ //If we have a message in the queue
+    if(messageQueue.length > 0 && nextMessage){             //If we have a message in the queue
 
-        var message = messageQueue[0];
-        //var msg = messageQueue[0]['message'];
+        var message = messageQueue[0];                      //Getting the first one
 
-        for(i = 0; i < message['message'].length; i++){
+        for(i = 0; i < message['message'].length; i++){     //Creating our characters
 
             let character = message['message'][i];
+            createFallingCharacter(i, character, message);
 
-            createFallingCharacters(i, character, message);
         }
 
-        createMessageBubble(message);
+        createMessagePopup(message);                        //Make our popup message on the right
 
-        nextMessage = false;
-        messageQueue.shift();
+        nextMessage = false;                                //Will be false until final character has been created
+        messageQueue.shift();                               //Removing that message from queue
     }
 }, 1000);
 
-function createFallingCharacters(pos, character, message){
+//Creates our falling characters, if it's the last character sets the flag for a new message to true
+function createFallingCharacter(pos, character, message){
     setTimeout(function() {
 
         console.log(message['messageID']);
@@ -65,10 +83,11 @@ function createFallingCharacters(pos, character, message){
             console.log("ready for next");
         }
 
-    }, i * 500);
+    }, pos * 500);
 }
 
-function createMessageBubble(message){
+//Appends a message popup to our message container on the right side of screen
+function createMessagePopup(message){
 
     $('#messages').append('<div class="message" id="' + message['messageID'] + '"> ' +
                                 '<div class="message-username">[' + message['username'] + ']:</div></div>');
@@ -78,8 +97,6 @@ function createMessageBubble(message){
         $('#' + message['messageID']).append('<span class="hidden" data-visible="false" data-character=' + message['message'][i] +'>' + message['message'][i] +'</span>');
 
     }
-    
-
 }
 
 
@@ -102,9 +119,10 @@ class Character {
         this.moveCharacter();
     }
 
+    //Starts our character moving until it reaches the bottom of the div
     moveCharacter(){
 
-        this.getRandomX();
+        this.setRandomX();
 
         var speed = 1.5;
         var currentPos = 0;
@@ -124,7 +142,8 @@ class Character {
         }, 20);
     }
 
-    getRandomX(){
+    //Sets a random horizontal location for our letter to fall from
+    setRandomX(){
 
         var areaWidth = $('#character-area').width(),
             charWidth = this.ele.clientWidth,
@@ -136,76 +155,60 @@ class Character {
     }
 } 
 
-/* --------- Sending to Server ---------*/
-
-//When our message form is submitted we send the message to the server
-$('#message-form').submit(function(e){
-    e.preventDefault();
-
-    if($('#client-message').val().replace(/\s/g, '').length){
-        //Message isn't only whitespace
-        socket.emit('client_message', {
-            username: username,
-            room: room,
-            message: $('#client-message').val()
-        });
-
-        $('#client-message').val('');
-        $('#client-message').blur();
-    } else {
-        //Submitted only whitespace
-        $('#client-message').val('');
-        $('#client-message').blur();
-    }
-});
-
-
-/*--------- Key Handler --------- */
+/*--------- Key Handling --------- */
 
 //Keypress logic
-document.onkeydown = function(event){
-    event = event || window.event;
+document.onkeydown = function(e){
+    e = e || window.event;
 
-    var characterFound = false;
-    var keyPress = String.fromCharCode(event.keyCode);
+    var keyPressString = String.fromCharCode(e.keyCode);
     
-    if(!$('#client-message').is(':focus')){ //If we aren't focused in the form
+    if(!$('#client-message').is(':focus')){                //If we aren't focused in the form (not typing a message)
         
+        if(e.keyCode === 13) {                             //If enter is pressed we give the message form focus again
+                e.preventDefault();
+                $('#client-message').focus();
+        } else {                                              
+                checkForCharacterRemoval(keyPressString);  //Otherwise checking whether the character should be removed
+            }
+    }
+}
 
-        if(event.keyCode === 13) { //If enter is pressed we give the message form focus again
-            event.preventDefault();
-            $('#client-message').focus();
-        } else {
+function checkForCharacterRemoval(keyPressString){
 
-            //TO DO: This all needs to be cleaned up and moved to a separate function
-            var characterArea = document.getElementById('character-area');
-            var currentCharacters = characterArea.querySelectorAll('[data-character]')
-            
-            outerloop:
-            for(i = 0; i < currentCharacters.length; i++){
-                    
-                if(currentCharacters[i].getAttribute('data-character').toUpperCase() === keyPress) {
+    var characterArea = document.getElementById('character-area');              //Our div where we want the elements to fall
+    var currentCharacters = characterArea.querySelectorAll('[data-character]')  //List of current characters in that area
+    
+    outerloop:
+    for(i = 0; i < currentCharacters.length; i++){  //Iterating our current characters
 
-                    //Here we are first getting the message element that the id matches, and then 
-                    //all of the span elements inside that message so we can figure out if the character was inside
-                    var char = currentCharacters[i];
-                    var messageEle = document.getElementById(char.getAttribute('data-message-id')).querySelectorAll('[data-character]');
+        if(currentCharacters[i].getAttribute('data-character').toUpperCase() === keyPressString) {  //If it matches the keyPress
 
-                    //Inside our span elements is there a span that matches the character typed
-                    for(j = 0; j < messageEle.length; j++){
-                        console.log(messageEle[j].getAttribute('data-visible'));
-                        if(messageEle[j].getAttribute('data-character').toUpperCase() === keyPress && messageEle[j].getAttribute('data-visible') === 'false'){
-                            //We've found a match
-                            messageEle[j].setAttribute('data-visible', true);
-                            messageEle[j].classList.remove('hidden');
-                            messageEle[j].classList.add('visible');
-                            currentCharacters[i].remove();
-                            break outerloop;
-                        }
-                    }
+            //Here we are getting the message element that the id matches along with its span element children
+            var characterEle = currentCharacters[i];
+            var messageEleSpans = document.getElementById(characterEle.getAttribute('data-message-id')).querySelectorAll('[data-character]');
+
+            //Inside our span elements, is there a span that matches the character typed
+            for(j = 0; j < messageEleSpans.length; j++){
+
+                if(messageEleSpans[j].getAttribute('data-character').toUpperCase() === keyPressString && messageEleSpans[j].getAttribute('data-visible') === 'false'){
+                   
+                    //We've found a match, changing some CSS around and removing the falling element
+                    messageCharacterFound(messageEleSpans[j]);
+                    currentCharacters[i].remove();
+
+                    break outerloop;    //We need to break out of both for loops, we only want one letter to be 'found' (in case it appears more than once)
                 }
             }
         }
     }
 }
 
+//Sets the class CSS for our span element so the character will show
+function messageCharacterFound(ele){
+
+    ele.setAttribute('data-visible', true);
+    ele.classList.remove('hidden');
+    ele.classList.add('visible');
+
+}
