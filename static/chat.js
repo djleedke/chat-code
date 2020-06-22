@@ -75,12 +75,12 @@ setInterval(function(){
 function createFallingCharacter(pos, character, message){
     setTimeout(function() {
 
-        console.log(message['messageID']);
-        const char = new Character(character, message) 
+        if(character !== ' '){
+            const char = new Character(character, message) 
+        }
 
         if(pos === message['message'].length - 1){
             nextMessage = true;
-            console.log("ready for next");
         }
 
     }, pos * 500);
@@ -94,7 +94,11 @@ function createMessagePopup(message){
 
     for(i = 0; i < message['message'].length; i++){
 
-        $('#' + message['messageID']).append('<span class="hidden" data-visible="false" data-character=' + message['message'][i] +'>' + message['message'][i] +'</span>');
+        if(message['message'][i] !== ' '){
+            $('#' + message['messageID']).append('<span class="hidden" data-visible="false" data-character=' + message['message'][i] +'>#</span>');
+        } else {
+            $('#' + message['messageID']).append('<span class="hidden" data-visible="false" data-character=' + message['message'][i] +'> </span>');
+        }
 
     }
 }
@@ -209,6 +213,7 @@ function checkForCharacterRemoval(keyPressString){
 function messageCharacterFound(ele){
 
     ele.setAttribute('data-visible', true);
+    ele.innerHTML = ele.getAttribute('data-character');
     ele.classList.remove('hidden');
     ele.classList.add('visible');
 
