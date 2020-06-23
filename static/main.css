@@ -3,14 +3,17 @@ html, body {
     height:100%;
     width:100%;
     margin:0px;
-    overflow-y:hidden;
+    overflow-y: hidden;
     font-family: 'Source Code Pro', monospace;
 }
 
 header {
     background-color:#1f282e;
-    height:50px;
+    height:6%;
+    min-height: 50px;
     color:white;
+    position:sticky;
+    z-index:1;
 }
 
 #logo {
@@ -24,22 +27,25 @@ header {
 #character-area {
     float:left;
     width:75%;
-    height:100%;
+    height:94%;
     background-color:#36454f;
     color:white;
     
 }
 
 #room-stats {
-    padding-left:20px;
-    padding-top:20px;
+    margin-left:15px;
+    margin-top:15px;
+    padding:5px;
     float:left;
+    background-color: #36454f;
+    border-radius: 5px;
 }
 
 #message-area {
     display: inline-block;
     background-color:#36454f;
-    height:100%;
+    height:94%;
     width:25%;
     color:white;
     display:flex;
@@ -123,10 +129,6 @@ header {
     transition: all ease 5s;
 }
 
-.user-sent {
-   
-}
-
 .message-username {
     
     padding-bottom: 5px;
@@ -140,5 +142,63 @@ header {
     color: white;
 }
 
+/*--------- Media Queries ----------*/
+
+@media only screen and (max-width:800px){
+
+    header {
+        height:8%;
+    }
+
+    #character-area {
+       display:block;
+       position: absolute;
+       height:92%;
+       width:100%;
+       top:50px;
+       left:0;
+       right:0;
+       bottom:0;
+       background-color: transparent;
+       z-index:1;
+    }
+
+    .character {
+        font-size: 2em;
+    }
+
+    #message-form {
+        width:100%;
+        bottom:0px;
+        z-index:3;
+    }
+
+    #message-form button {
+        display: none;
+    }
+
+    .extended {
+        width:100%;
+    }
+
+    #messages {
+        margin-bottom:70px;
+        
+    }
+
+    .message {
+        margin-right:0px;
+        font-size:1em;
+    }
+
+    #message-area {
+        width:100%;
+        height:92%;
+        z-index: 2;
+        
+    }
+
+
+}
 
 

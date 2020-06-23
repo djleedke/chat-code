@@ -123,7 +123,6 @@ function createMessagePopup(message, encoded){
         }
     }
 
-    
     startPopupTimer(popup);
 
 }
@@ -138,7 +137,6 @@ function startPopupTimer(popup){
 
     }, 30000);
 }
-
 
 
 /*---------- Classes ----------*/
@@ -168,11 +166,19 @@ class Character {
         var speed = 1.5;
         var currentPos = 0;
         var elem = this.ele;
+        var headerHeight = $('header').height();
+        
 
         var motionInterval = setInterval(function(){
             currentPos += speed;
-            elem.style.top = currentPos + 50 + "px";
-            
+
+            //Fixes some animation jumpiness on mobile
+            if($(document).height() > 800){
+                elem.style.top = currentPos + headerHeight + "px"; 
+            } else {
+                elem.style.top = currentPos + "px"; 
+            }
+
             var maxHeight = $('#character-area').height() - elem.clientHeight / 2;
 
             if(currentPos > maxHeight){
