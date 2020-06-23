@@ -1,5 +1,8 @@
 var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+var randomSymbols = ['#', '$', '%']
 var messageQueue = [];
+
 
 
 /*--------- Receiving from Server ---------*/
@@ -73,7 +76,7 @@ setInterval(function(){
     }
 }, 1000);
 
-//Creates our falling characters, if it's the last character sets the flag for a new message to true
+//Creates our falling characters, if it's the last character it sets the flag for a new message to true
 function createFallingCharacter(pos, character, message){
     setTimeout(function() {
 
@@ -85,7 +88,7 @@ function createFallingCharacter(pos, character, message){
             nextMessage = true;
         }
 
-    }, pos * 400);
+    }, pos * 1000);
 }
 
 //Appends a message popup to our message container on the right side of screen
@@ -178,6 +181,15 @@ class Character {
             }
 
         }, 20);
+
+        var codeArray = ['0', this.character, '1', this.character];
+
+        var codeEffectInterval = setInterval(function(){
+
+        
+            elem.innerHTML = codeArray[Math.floor(Math.random() * codeArray.length)];
+
+        }, 300);
     }
 
     //Sets a random horizontal location for our letter to fall from
