@@ -1,9 +1,6 @@
 var socket = io.connect('http://' + document.domain + ':' + location.port);
 
-var randomSymbols = ['#', '$', '%']
 var messageQueue = [];
-
-
 
 /*--------- Receiving from Server ---------*/
 
@@ -175,7 +172,7 @@ class Character {
             currentPos += speed;
 
             //Fixes some animation jumpiness on mobile
-            if($(document).height() > 800){
+            if($(document).width() > 1000){
                 elem.style.top = currentPos + headerHeight + "px"; 
             } else {
                 elem.style.top = currentPos + "px"; 
@@ -215,8 +212,7 @@ class Character {
 
 /*--------- Key Handling --------- */
 
-//Keypress logic
-document.onkeydown = function(e){
+document.onkeypress = function(e){
     e = e || window.event;
 
     var keyPressString = String.fromCharCode(e.keyCode);
@@ -231,6 +227,7 @@ document.onkeydown = function(e){
                 checkForCharacterRemoval(keyPressString);  //Otherwise checking whether the character should be removed
             }
     }
+    
 }
 
 //Checks if the clicked/typed character needs to be removed
