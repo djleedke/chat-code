@@ -17,16 +17,6 @@ rooms_manager = RoomsManager()
 def index():
     return render_template('index.html')
 
-@app.route('/chat')
-def chat():
-    username = request.args.get('username')
-    room = request.args.get('room')
-
-    if username and room:
-        return render_template('chat.html', username=username, room=room)
-    else:
-        return redirect(url_for('index'))
-
 #On a successful connection 'join_room' is sent from client
 @socketio.on('join_room')
 def handle_join_room(data):
@@ -34,18 +24,30 @@ def handle_join_room(data):
     join_room(data['room'])                                             #SocketIO room creation or joining
     rooms_manager.join_or_create_room(data['room'], data['username'])   #Adding room to our implemented room manager
     
-    socketio.emit('update_users', data, room=data['room'])
+    user_count = rooms_manager.get_user_count_for_room(data['room'])
+
+    new_data = {
+        'room-name': data['room'],
+        'user-count': user_count,
+    }
+
+    socketio.emit('join_room_success', new_data, room=data['room'])
+
+@socketio.on('leave_room')
+def handle_leave_room(data):
+    
+    leave_room(data['room'])
+    rooms_manager.leave_room(data['room'], data['username'])
+
+    user_count = rooms_manager.get_user_count_for_room(data['room'])
+
+    socketio.emit('update_user_count', user_count, room=data['room'])
 
 #Receiving the message from the client
 @socketio.on('client_message')
 def handle_client_message(data):
     processed_data = rooms_manager.get_room(data['room']).process_client_message(data)  #Sending the message to the room for validation and to add a unique id
     socketio.emit('server_message', processed_data, room=processed_data['room'])        #Sending it back to the other connected clients
-
-@socketio.on('disconnect')
-def test_disconnect():
-    print('Client disconnected')
-
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)

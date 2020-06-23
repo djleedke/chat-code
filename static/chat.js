@@ -2,27 +2,52 @@ var socket = io.connect('http://' + document.domain + ':' + location.port);
 
 var messageQueue = [];
 
-/*--------- Receiving from Server ---------*/
+/*--------- Welcome Overlay ----------*/
 
-//On connection we send username & room args from index
-socket.on('connect', function() {
+$('#overlay-form').submit(function(e){
+    e.preventDefault();
+    
+    username = $('#overlay-username').val();
+    room = $('#overlay-room-name').val();
+
+    console.log(room);
+
     socket.emit('join_room', {
         username: username,
         room: room
     });
+
+    $('#welcome-overlay').css('display', 'none');
+
+});
+
+/*--------- Receiving from Server ---------*/
+
+//On connection
+socket.on('connect', function() {
+
 });
 
 //Receiving the message from the server and updating the html
 socket.on('server_message', function(data){
         
     //var message = { messageID: data.messageID,  message: data.message }
-    console.log(data);
     if(data.username !== username){ //We only want messages from other users
         messageQueue.push(data);
     } else {
         createMessagePopup(data, false);
     }
 
+});
+
+socket.on('join_room_success', function (data){
+    $('#username').text($('#overlay-username').val());
+    $('#room-name').text(data['room-name']);
+    $('#user-count').text(data['user-count']);
+});
+
+socket.on('update_user_count', function(data){
+    $('#user-count').text(data);
 });
 
 /* --------- Sending to Server ---------*/
@@ -45,6 +70,15 @@ $('#message-form').submit(function(e){
         $('#client-message').val('');
         $('#client-message').blur();
     }
+});
+
+//When a user closes the page we send an event to remove them
+$(window).on('beforeunload', function(){
+    socket.emit('leave_room', {
+        username: username,
+        room: room,
+    });
+    return;
 });
 
 /*----------  Message Queue ----------*/
@@ -191,7 +225,6 @@ class Character {
 
         var codeEffectInterval = setInterval(function(){
 
-        
             elem.innerHTML = codeArray[Math.floor(Math.random() * codeArray.length)];
 
         }, 300);
@@ -220,14 +253,15 @@ document.onkeypress = function(e){
     if(!$('#client-message').is(':focus')){                //If we aren't focused in the form (not typing a message)
         
         if(e.keyCode === 13) {                             //If enter is pressed we give the message form focus again
-                e.preventDefault();
-                //$('#client-message').focus();
-                toggleMessageForm();
+               
+            e.preventDefault();
+            toggleMessageForm();
+
         } else {                                              
                 checkForCharacterRemoval(keyPressString);  //Otherwise checking whether the character should be removed
             }
     }
-    
+
 }
 
 //Checks if the clicked/typed character needs to be removed

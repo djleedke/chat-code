@@ -22,6 +22,26 @@ class RoomsManager:
             self.rooms_list.append(new_room)
             new_room.add_user(username)
 
+    def leave_room(self, room_name, username):
+
+        for room in self.rooms_list:
+            if room.name == room_name:
+                if(room.remove_user(username)):
+                    self.rooms_list.remove(room)
+                    print('Rooms Manager: Room is empty, removing.')
+                break
+
+
+    def get_user_count_for_room(self, room_name):
+
+        room = self.get_room(room_name)
+
+        if(room):
+            return room.get_user_count()
+        else:
+            return 0
+
+
     def get_room(self, room_name):
 
         room = None
@@ -47,14 +67,21 @@ class Room:
         else:
             self.users.append(username)
             print('Room {}: {} has joined the room.'.format(self.name, username))
-            print('Room {}: Current Users: {}'.format(self.name, self.users))
+            self.print_current_users()
 
             return True
 
     def remove_user(self, username):
 
         if username in self.users:
-            print('Room {}: {} user has left the room.'.format(self.name, username))
+            self.users.remove(username)
+            print('Room {}: {} has left the room.'.format(self.name, username))
+            self.print_current_users()
+            
+        if len(self.users) == 0:
+            return True #Room empty take it out of active room list
+
+        return False
 
     def process_client_message(self, data):
         
@@ -63,3 +90,9 @@ class Room:
         print('Room {}: {}: {}'.format(self.name, processed_data['username'], processed_data['message']))
 
         return processed_data
+
+    def get_user_count(self):
+        return len(self.users)
+
+    def print_current_users(self):
+        print('Room {}: Current Users: {}'.format(self.name, self.users))
