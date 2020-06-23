@@ -35,7 +35,6 @@ $('#message-form').submit(function(e){
     e.preventDefault();
 
     if($('#client-message').val().replace(/\s/g, '').length){
-        //Message isn't only whitespace TO DO: Planning on moving input validation to the server
         socket.emit('client_message', {
             username: username,
             room: room,
@@ -152,6 +151,9 @@ class Character {
         this.ele.setAttribute('data-character', character);
         this.ele.setAttribute('style', 'position:absolute');
         this.ele.setAttribute('class', 'character');
+        this.ele.onclick = function(){
+            checkForCharacterRemoval(String(this.getAttribute('data-character')));
+        }
         //Adding to DOM
         $('#character-area').append(this.ele);
         //Start it falling
@@ -231,7 +233,10 @@ document.onkeydown = function(e){
     }
 }
 
+//Checks if the clicked/typed character needs to be removed
 function checkForCharacterRemoval(keyPressString){
+    
+    keyPressString = keyPressString.toUpperCase();
 
     var characterArea = document.getElementById('character-area');              //Our div where we want the elements to fall
     var currentCharacters = characterArea.querySelectorAll('[data-character]')  //List of current characters in that area
