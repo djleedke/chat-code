@@ -17,9 +17,11 @@ socket.on('server_message', function(data){
         
     //var message = { messageID: data.messageID,  message: data.message }
     console.log(data);
-    //if(data.username !== username){ //We only want messages from other users
+    if(data.username !== username){ //We only want messages from other users
         messageQueue.push(data);
-    //}
+    } else {
+        createMessagePopup(data, false);
+    }
 
 });
 
@@ -64,7 +66,7 @@ setInterval(function(){
 
         }
 
-        createMessagePopup(message);                        //Make our popup message on the right
+        createMessagePopup(message, true);                  //Make our popup message on the right
 
         nextMessage = false;                                //Will be false until final character has been created
         messageQueue.shift();                               //Removing that message from queue
@@ -83,25 +85,57 @@ function createFallingCharacter(pos, character, message){
             nextMessage = true;
         }
 
-    }, pos * 500);
+    }, pos * 400);
 }
 
 //Appends a message popup to our message container on the right side of screen
-function createMessagePopup(message){
+function createMessagePopup(message, encoded){
 
-    $('#messages').append('<div class="message" id="' + message['messageID'] + '"> ' +
-                                '<div class="message-username">[' + message['username'] + ']:</div></div>');
+    var popup = document.createElement('div');
+
+    popup.setAttribute('class', 'message');
+    popup.setAttribute('id', message['messageID']);
+
+    if(message['username'] === username){
+        popup.classList.add('user-sent');
+        popup.innerHTML = '<div class="message-username">[you]:</div></div>';
+    } else {
+        popup.innerHTML = '<div class="message-username">[' + message['username'] + ']:</div></div>';
+    }
+
+    $('#messages').append(popup);
 
     for(i = 0; i < message['message'].length; i++){
 
         if(message['message'][i] !== ' '){
-            $('#' + message['messageID']).append('<span class="hidden" data-visible="false" data-character=' + message['message'][i] +'>#</span>');
+            if(encoded === true){
+                
+                $('#' + message['messageID']).append('<span class="hidden" data-visible="false" data-character=' + message['message'][i] +'>#</span>');
+            } else {
+                $('#' + message['messageID']).append('<span class="hidden" data-visible="false" data-character=' + message['message'][i] +'>'+ message['message'][i] +'</span>');
+            }
+            
         } else {
             $('#' + message['messageID']).append('<span class="hidden" data-visible="false" data-character=' + message['message'][i] +'> </span>');
         }
-
     }
+
+    
+    startPopupTimer(popup);
+
 }
+
+function startPopupTimer(popup){
+ 
+    setTimeout(function() {
+        
+        $(popup).fadeOut(10000, function(){
+            popup.remove();
+        });
+
+    }, 30000);
+}
+
 
 
 /*---------- Classes ----------*/

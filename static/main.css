@@ -68,7 +68,7 @@ header {
 }
 
 .extended {
-    width:50%;
+    width:40%;
     transition: all ease 1s;
     padding-left:20px;
 }
@@ -111,11 +111,20 @@ header {
 .message {
     padding:10px 20px;
     background-color: #29353d;
-    color: lightgreen;
     margin:2% 5% 0 2%;
     border-radius: 5px;
     font-size:1.25em;
+    color: lightgreen;
     overflow-wrap:break-word;
+}
+
+.fade {
+    background-color:transparent;
+    transition: all ease 5s;
+}
+
+.user-sent {
+   
 }
 
 .message-username {
