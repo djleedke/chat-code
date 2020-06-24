@@ -7,10 +7,6 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for("static", filename="main.css")}}">
-    <script type ="text/javascript">
-        var username = "{{ username }}";
-        var room = "{{ room }}";
-    </script>
 </head>
 <body>
     <div id="welcome-overlay">
@@ -36,7 +32,7 @@
             <div>Users: <span id="user-count">n/a</span></div>
         </div>
         <form id="message-form">
-            <input type="text" id="client-message" class="extended" placeholder="Encode a message (50 characters or less)" tabindex="0" autocomplete="off" maxlength="50"><button type="submit"><span class="material-icons">send</span></button>
+            <input type="text" id="client-message" class="extended" placeholder="Encode a message (50 characters or less)" tabindex="0" autocomplete="off" maxlength="50"><button id="submit-message" type="submit"><span class="material-icons">send</span></button>
         </form>
     </div>
     <div id="message-area">

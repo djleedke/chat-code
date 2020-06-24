@@ -12,6 +12,7 @@ log.disabled = True
 app.logger.disabled = True
 
 rooms_manager = RoomsManager()
+#print(socketio.async_mode)
 
 @app.route('/')
 def index():
@@ -22,7 +23,7 @@ def index():
 def handle_join_room(data):
 
     join_room(data['room'])                                             #SocketIO room creation or joining
-    rooms_manager.join_or_create_room(data['room'], data['username'])   #Adding room to our implemented room manager
+    rooms_manager.join_or_create_room(data['room'], data['username'], request.sid)   #Adding room to our implemented room manager
     
     user_count = rooms_manager.get_user_count_for_room(data['room'])
 
@@ -35,12 +36,12 @@ def handle_join_room(data):
 
 @socketio.on('leave_room')
 def handle_leave_room(data):
-    
+
     leave_room(data['room'])
-    rooms_manager.leave_room(data['room'], data['username'])
+    rooms_manager.leave_room(data['room'], request.sid)
 
     user_count = rooms_manager.get_user_count_for_room(data['room'])
-
+    
     socketio.emit('update_user_count', user_count, room=data['room'])
 
 #Receiving the message from the client
@@ -49,5 +50,18 @@ def handle_client_message(data):
     processed_data = rooms_manager.get_room(data['room']).process_client_message(data)  #Sending the message to the room for validation and to add a unique id
     socketio.emit('server_message', processed_data, room=processed_data['room'])        #Sending it back to the other connected clients
 
+@socketio.on('disconnect')
+def disconnect():
+
+    room = rooms_manager.leave_room(request.sid)
+    leave_room(room)
+
+    user_count = rooms_manager.get_user_count_for_room(room)
+    
+    socketio.emit('update_user_count', user_count, room=room)
+
+
+
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, host='10.0.0.149', port=8000)
+

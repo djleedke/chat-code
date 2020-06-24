@@ -1,6 +1,8 @@
 var socket = io.connect('http://' + document.domain + ':' + location.port);
 
 var messageQueue = [];
+var room;
+var username;
 
 /*--------- Welcome Overlay ----------*/
 
@@ -65,20 +67,13 @@ $('#message-form').submit(function(e){
 
         $('#client-message').val('');
         $('#client-message').blur();
+        //toggleMessageForm();
     } else {
         //Submitted only whitespace
         $('#client-message').val('');
         $('#client-message').blur();
     }
-});
 
-//When a user closes the page we send an event to remove them
-$(window).on('beforeunload', function(){
-    socket.emit('leave_room', {
-        username: username,
-        room: room,
-    });
-    return;
 });
 
 /*----------  Message Queue ----------*/
@@ -253,7 +248,7 @@ document.onkeypress = function(e){
     if(!$('#client-message').is(':focus')){                //If we aren't focused in the form (not typing a message)
         
         if(e.keyCode === 13) {                             //If enter is pressed we give the message form focus again
-               
+            console.log('togglin');
             e.preventDefault();
             toggleMessageForm();
 
@@ -309,12 +304,12 @@ function messageCharacterFound(ele){
 
 /* --------- On Click Events ----------*/
 
-$('#submit').click(function(){
+$('#submit-message').click(function(){
     toggleMessageForm();
 });
 
 function toggleMessageForm(){
-    
+
     if($('#client-message').hasClass('extended')){
         $('#client-message').removeClass('extended');
         $('#client-message').addClass('retracted');
