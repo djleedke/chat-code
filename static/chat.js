@@ -3,6 +3,7 @@ var socket = io.connect('http://' + document.domain + ':' + location.port);
 var messageQueue = [];
 var room;
 var username;
+var connected = false;
 
 /*--------- Welcome Overlay ----------*/
 
@@ -39,6 +40,7 @@ socket.on('server_message', function(data){
 });
 
 socket.on('join_room_success', function (data){
+    connected = true;
     $('#welcome-overlay').addClass('hide-overlay');
     $('#username').text($('#overlay-username').val());
     $('#room-name').text(data['room-name']);
@@ -246,10 +248,10 @@ document.onkeypress = function(e){
 
     var keyPressString = String.fromCharCode(e.keyCode);
     
-    if(!$('#client-message').is(':focus')){                //If we aren't focused in the form (not typing a message)
+    if(!$('#client-message').is(':focus') && connected){                //If we aren't focused in the form (not typing a message)
         
         if(e.keyCode === 13) {                             //If enter is pressed we give the message form focus again
-            console.log('togglin');
+
             e.preventDefault();
             toggleMessageForm();
 

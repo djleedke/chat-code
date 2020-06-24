@@ -26,7 +26,7 @@ html, body {
 }
 
 #overlay-alert {
-    color:red;
+    color:#ff6666;
     display:none;
 }
 
@@ -42,6 +42,10 @@ html, body {
     margin:10% auto;
     text-align: center;
     border: 2px solid lightgreen;
+}
+
+.emphasize {
+    color:lightgreen;
 }
 
 #overlay-form input[type=text] {
