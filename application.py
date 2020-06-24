@@ -63,5 +63,6 @@ def disconnect():
 
 
 if __name__ == '__main__':
-    socketio.run(app, host='10.0.0.149', port=8000)
+    #socketio.run(app, host='10.0.0.149', port=8000)
+    socketio.run(app)
 
