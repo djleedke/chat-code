@@ -12,14 +12,12 @@ $('#overlay-form').submit(function(e){
     username = $('#overlay-username').val();
     room = $('#overlay-room-name').val();
 
-    console.log(room);
-
     socket.emit('join_room', {
         username: username,
         room: room
     });
 
-    $('#welcome-overlay').css('display', 'none');
+    $('#welcome-overlay').addClass('hide-overlay');
 
 });
 

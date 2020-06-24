@@ -37,7 +37,6 @@ class RoomsManager:
         
         return False
 
-
     #returns users count for specified room
     def get_user_count_for_room(self, room_name):
 
