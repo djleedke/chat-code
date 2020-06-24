@@ -17,8 +17,6 @@ $('#overlay-form').submit(function(e){
         room: room
     });
 
-    $('#welcome-overlay').addClass('hide-overlay');
-
 });
 
 /*--------- Receiving from Server ---------*/
@@ -41,9 +39,14 @@ socket.on('server_message', function(data){
 });
 
 socket.on('join_room_success', function (data){
+    $('#welcome-overlay').addClass('hide-overlay');
     $('#username').text($('#overlay-username').val());
     $('#room-name').text(data['room-name']);
     $('#user-count').text(data['user-count']);
+});
+
+socket.on('join_room_failure', function (data){
+    $('#overlay-alert').css('display', 'block');
 });
 
 socket.on('update_user_count', function(data){

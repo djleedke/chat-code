@@ -15,13 +15,22 @@ class RoomsManager:
         for room in self.rooms_list:
             if room.name == room_name:
                 exists = True
-                room.add_user(username,sid)
+                if(room.add_user(username,sid)):
+                    return True
+                else:
+                    return False
 
         if len(self.rooms_list) == 0 or exists == False:
             print('Rooms Manager: A new room has been created with name "' + room_name + '"')
             new_room = Room(room_name)
             self.rooms_list.append(new_room)
-            new_room.add_user(username, sid)
+
+            if(new_room.add_user(username, sid)):
+                return True
+            else:
+                return False
+
+        return False
 
     #Removes user with specified request id from room, returns string of room that user was in
     def leave_room(self, sid):
@@ -67,9 +76,11 @@ class Room:
     #adds sid and user to users dictionary
     def add_user(self, username, sid):
         
-        #TO DO: Need to add a check for whether or not name exists
-        #print('Room {}: {} user exists!'.format(self.name, username))
-        
+        for val in self.users.values():
+            if val == username:
+                print('Room {}: {} username exists!'.format(self.name, username))
+                return False
+
         self.users[sid] = username
         print('Room {}: {} has joined the room.'.format(self.name, username))
         self.print_current_users()

@@ -25,6 +25,11 @@ html, body {
     color:white;
 }
 
+#overlay-alert {
+    color:red;
+    display:none;
+}
+
 #overlay-form {
     position: absolute;
     bottom:25%;

@@ -18,21 +18,22 @@ rooms_manager = RoomsManager()
 def index():
     return render_template('index.html')
 
-#On a successful connection 'join_room' is sent from client
+#On a successful connection 'join_room_success' is sent from client
 @socketio.on('join_room')
 def handle_join_room(data):
+                                          
+    if(rooms_manager.join_or_create_room(data['room'], data['username'], request.sid)):   #Adding room to our implemented room manager
+        join_room(data['room'])                                                           #SocketIO room creation or joining    
+        user_count = rooms_manager.get_user_count_for_room(data['room'])
 
-    join_room(data['room'])                                             #SocketIO room creation or joining
-    rooms_manager.join_or_create_room(data['room'], data['username'], request.sid)   #Adding room to our implemented room manager
-    
-    user_count = rooms_manager.get_user_count_for_room(data['room'])
+        new_data = {
+            'room-name': data['room'],
+            'user-count': user_count,
+        }
 
-    new_data = {
-        'room-name': data['room'],
-        'user-count': user_count,
-    }
-
-    socketio.emit('join_room_success', new_data, room=data['room'])
+        socketio.emit('join_room_success', new_data, room=data['room'])
+    else:
+        socketio.emit('join_room_failure')
 
 @socketio.on('leave_room')
 def handle_leave_room(data):
@@ -57,9 +58,8 @@ def disconnect():
     leave_room(room)
 
     user_count = rooms_manager.get_user_count_for_room(room)
-    
-    socketio.emit('update_user_count', user_count, room=room)
 
+    socketio.emit('update_user_count', user_count, room=room)
 
 
 if __name__ == '__main__':
