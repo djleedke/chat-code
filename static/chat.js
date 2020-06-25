@@ -1,4 +1,5 @@
-var socket = io.connect('http://' + document.domain + ':' + location.port);
+var protocol = window.location.protocol;
+var socket = io.connect(protocol + '//' + document.domain + ':' + location.port);
 
 var messageQueue = [];
 var room;
