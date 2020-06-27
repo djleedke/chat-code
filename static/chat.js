@@ -14,19 +14,27 @@ $('#overlay-form').submit(function(e){
     username = $('#overlay-username').val();
     room = $('#overlay-room-name').val();
 
-    socket.emit('join_room', {
-        username: username,
-        room: room
-    });
+
+    if($('#overlay-username').val().replace(/\s/g, '').length){//Username not blank
+        
+        //If room name is blank we go to the 'Public' room
+        if(!$('#overlay-room-name').val().replace(/\s/g, '').length){
+            room = 'Public';
+        }
+
+        socket.emit('join_room', {
+            username: username,
+            room: room
+        });
+
+    } else {//If username is blank
+        $('#overlay-alert').css('display', 'block');
+        $('#overlay-alert').text('Username cannot be blank.');
+    };
 
 });
 
 /*--------- Receiving from Server ---------*/
-
-//On connection
-socket.on('connect', function() {
-
-});
 
 //Receiving the message from the server and updating the html
 socket.on('server_message', function(data){
@@ -50,6 +58,7 @@ socket.on('join_room_success', function (data){
 
 socket.on('join_room_failure', function (data){
     $('#overlay-alert').css('display', 'block');
+    $('#overlay-alert').text('Username already in use.');
 });
 
 socket.on('update_user_count', function(data){

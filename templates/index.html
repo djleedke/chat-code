@@ -13,13 +13,13 @@
         <form id="overlay-form">
             <h1>Welcome to <span class="emphasize">ChatCode</span>!</h1>
             <p>Decode the messages before they are lost forever.</p>
-            <div id="overlay-alert">Username already in use.</div>
+            <div id="overlay-alert"></div>
             <div>
-                <input id="overlay-username" type="text" name="username" placeholder="Choose a username...">
+                <input id="overlay-username" type="text" name="username" placeholder="Choose a username..." maxlength="20">
             </div>
             <div>
-                <input id="overlay-room-name" type="text" name="room" placeholder="Enter a room name...">
-                <div class="overlay-note">(Leave room name blank for community chat)</div>
+                <input id="overlay-room-name" type="text" name="room" placeholder="Enter a room name..." maxlength="20">
+                <div class="overlay-note">(Leave room name blank for public chat)</div>
             </div>
             <button><span class="material-icons">arrow_downward</span></button>
         </form>
