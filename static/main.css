@@ -58,6 +58,11 @@ html, body {
     margin-bottom:5px;
 }
 
+#overlay-form input[type=text]:focus {
+    outline: none;
+    box-shadow: 0 0 1pt 2pt lightgreen;
+}
+
 .overlay-note {
     margin-top:5px;
     font-size:12px;
@@ -68,8 +73,11 @@ html, body {
     background-color: transparent;
     border:none;
     color:white;
-    cursor: pointer;
-    
+    cursor: pointer;  
+}
+
+#overlay-form button:focus {
+    outline: none;
 }
 
 #overlay-form button span {

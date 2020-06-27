@@ -4,7 +4,7 @@ import uuid
 class RoomsManager:
 
     def __init__(self):
-        print('Rooms Manager Initialized')
+        print('Rooms Manager: Initialized')
         self.rooms_list = []
         
     #Either joins an existing room or creates a new one if none exist w/ specified name   

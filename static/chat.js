@@ -6,6 +6,19 @@ var room;
 var username;
 var connected = false;
 
+
+//Initial connection event, will attempt to rejoin previous room if user & room name exist already
+socket.on('connect', function(data){
+
+    if(username !== undefined && room !== undefined){
+        socket.emit('join_room', {
+            username:username,
+            room:room
+        });
+    }
+});
+
+
 /*--------- Welcome Overlay ----------*/
 
 $('#overlay-form').submit(function(e){
@@ -26,6 +39,8 @@ $('#overlay-form').submit(function(e){
             username: username,
             room: room
         });
+
+        //toggleMessageForm();
 
     } else {//If username is blank
         $('#overlay-alert').css('display', 'block');
@@ -57,6 +72,7 @@ socket.on('join_room_success', function (data){
 });
 
 socket.on('join_room_failure', function (data){
+    $('#welcome-overlay').removeClass('hide-overlay');
     $('#overlay-alert').css('display', 'block');
     $('#overlay-alert').text('Username already in use.');
 });
@@ -70,6 +86,7 @@ socket.on('update_user_count', function(data){
 //When our message form is submitted we send the message to the server
 $('#message-form').submit(function(e){
     e.preventDefault();
+
 
     if($('#client-message').val().replace(/\s/g, '').length){
         socket.emit('client_message', {

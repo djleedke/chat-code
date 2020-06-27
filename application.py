@@ -31,9 +31,10 @@ def handle_join_room(data):
             'user-count': user_count,
         }
 
-        socketio.emit('join_room_success', new_data, room=data['room'])
+        socketio.emit('join_room_success', new_data, room=request.sid)
+        socketio.emit('update_user_count', user_count, room=data['room'])
     else:
-        socketio.emit('join_room_failure')
+        socketio.emit('join_room_failure', room=request.sid)
 
 @socketio.on('leave_room')
 def handle_leave_room(data):
@@ -48,6 +49,7 @@ def handle_leave_room(data):
 #Receiving the message from the client
 @socketio.on('client_message')
 def handle_client_message(data):
+
     processed_data = rooms_manager.get_room(data['room']).process_client_message(data)  #Sending the message to the room for validation and to add a unique id
     socketio.emit('server_message', processed_data, room=processed_data['room'])        #Sending it back to the other connected clients
 
