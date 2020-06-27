@@ -69,6 +69,7 @@ socket.on('join_room_success', function (data){
     $('#username').text($('#overlay-username').val());
     $('#room-name').text(data['room-name']);
     $('#user-count').text(data['user-count']);
+    toggleMessageForm();
 });
 
 socket.on('join_room_failure', function (data){
