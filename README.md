@@ -5,6 +5,7 @@ ChatCode is a Flask application that utilizes SocketIO to allow users to chat.  
 
 - [Setup](#setup)
 - [Built With](#built-with)
+- [Acknowledgements](#acknowledgements)
 
 ### Setup
 If you'd like to get the project running locally start by setting up .git in a new folder:
