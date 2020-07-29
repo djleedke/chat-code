@@ -48,7 +48,7 @@ flask run
 
 ...and that should do it!  You can send messages to and from yourself by opening multiple tabs in the browser.  The user sending the message does not need to decode their own so you will most likely want at least two tabs to get the full effect.  
 
-One other item to be aware of is that when the app is running on the development server there will be a slight delay (20 seconds or so) on disconnect before the number of users is updated, this is remedied in the deployed version by utilizing [eventlet](http://eventlet.net/) which you will see in the Procfile.  Have fun!
+One other item to be aware of is that when the app is running on the development server there will be a slight delay (20 seconds or so) on disconnect before the number of users is updated. This is remedied in the deployed version by utilizing [eventlet](http://eventlet.net/) which you will see in the Procfile.  Have fun!
 
 ### Built With
 
