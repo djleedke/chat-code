@@ -1,5 +1,5 @@
 ### ChatCode
-ChatCode is a Flask application that utilizes SocketIO to allow users to chat.  Messages must be "decoded" by recipients in order to read them (by typing in the letters), after which they are displayed temporarily and then disappear into the internet void.  Never to be seen again. Users can chat in a public room or specify a room name of their own for privacy. The app is deployed on Heroku and can be found at https://chat-code-app.herokuapp.com/.
+ChatCode is a Flask application that utilizes SocketIO to allow users to chat.  Messages must be "decoded" by recipients in order to read them (by typing in the letters). After which they are displayed temporarily and then disappear into the internet void, never to be seen again. Users can chat in a public room or specify a room name of their own for privacy. The app is deployed on Heroku and can be found at https://chat-code-app.herokuapp.com/.
 
 ![chat-code](https://user-images.githubusercontent.com/33850990/88751848-1f258c80-d11e-11ea-8e2d-0ee1dc42bed7.gif)
 
