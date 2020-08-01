@@ -56,6 +56,7 @@ One other item to be aware of is that when the app is running on the development
 
 - [Flask](https://flask.palletsprojects.com/en/1.1.x/) - for the webserver
 - [Flask-SocketIO](https://flask-socketio.readthedocs.io/en/latest/) - for the real-time chat
+- [jQuery](https://jquery.com/) - for the javascript
 
 ## Acknowledgements
 
